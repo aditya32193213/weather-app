@@ -29,4 +29,4 @@ createRoot(rootEl).render(
       </GPSProvider>
     </ThemeProvider>
   </StrictMode>
-);;
+);

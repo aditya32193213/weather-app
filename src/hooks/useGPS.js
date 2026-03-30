@@ -222,6 +222,13 @@ export function useGPS() {
       },
 
       {
+        // enableHighAccuracy: false — uses cell/WiFi positioning instead of GPS
+        // for faster, battery-friendly lookups. Accuracy is typically 100–1000 m,
+        // which is sufficient for weather data (Open-Meteo uses 2-decimal-place
+        // lat/lon anyway). NOTE: in dense urban areas with tall buildings, network
+        // positioning can occasionally drift by several city blocks — users who
+        // notice incorrect location data can work around this by granting full GPS
+        // permission. See README § "Location accuracy" for details.
         enableHighAccuracy: false,
         timeout:            GPS_TIMEOUT_MS,
         maximumAge:         GEO_CACHE_EXPIRY_MS,

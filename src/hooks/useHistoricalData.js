@@ -5,7 +5,6 @@ import { fetchHistoricalAirQuality }                          from "../services/
 import { useGPSContext }                                       from "../context/GPSContext";
 import { historicalWeatherSchema, historicalAirQualitySchema } from "../schemas/weatherSchema";
 import { isValidDateRange }                                    from "../utils/validation";
-import { ARCHIVE_LAG_DAYS }                                    from "../utils/constants";
 
 /**
  * Manages all data-fetching concerns for the Historical page:
@@ -29,7 +28,6 @@ import { ARCHIVE_LAG_DAYS }                                    from "../utils/co
  *   setIsStale: function,
  *   today: Date,
  *   doFetch: function,
- *   ARCHIVE_LAG_DAYS: number,
  * }}
  */
 export function useHistoricalData() {
@@ -162,6 +160,5 @@ export function useHistoricalData() {
     setIsStale,
     today,
     doFetch,
-    ARCHIVE_LAG_DAYS,
   };
 }

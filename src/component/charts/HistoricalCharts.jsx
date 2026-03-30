@@ -276,7 +276,15 @@ export default function HistoricalChart({
   // handles the rest. Use React.memo on child components if memoization is
   // genuinely needed for a specific subtree.
 
-  const renderChart = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const chart = useMemo(() => renderChart(), [
+    type, chartData, brushIndices, isTimeChart,
+    datasets, secondaryDatasets, primaryUnit, secondaryUnit,
+    yDomain, secondaryYDomain, chartId, isMobile,
+    handleBrushChange,
+  ]);
+
+  function renderChart() {
     const brushEl = (
       <Brush
         dataKey="time"
@@ -519,7 +527,7 @@ export default function HistoricalChart({
               <div className="overflow-x-auto" style={{ WebkitOverflowScrolling: "touch" }}>
                 <div style={{ minWidth }}>
                   <ResponsiveContainer width="100%" height={280} aria-busy={loading}>
-                    {renderChart()}
+                    {chart}
                   </ResponsiveContainer>
                 </div>
               </div>

@@ -371,6 +371,7 @@ HourlyChart.propTypes = {
   isToday:  PropTypes.bool,
   error:    PropTypes.oneOfType([
     PropTypes.string,
+    PropTypes.instanceOf(Error),
     PropTypes.shape({ message: PropTypes.string, type: PropTypes.string }),
   ]),
   loading:  PropTypes.bool,
