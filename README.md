@@ -349,7 +349,7 @@ Data is aggregated before charting to keep rendering fast on large historical ra
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/atmos-live.git
+git clone https://github.com/aditya32193213/weather-dashboard.git
 cd atmos-live
 
 # Install dependencies
