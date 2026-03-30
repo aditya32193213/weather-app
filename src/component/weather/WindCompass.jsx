@@ -5,11 +5,16 @@ import PropTypes from "prop-types";
 import { COMPASS_DIRECTIONS } from "../../utils/wind";
 import { formatValue } from "../../utils/format";
 
+// FIX: Indices updated for the 16-direction COMPASS_DIRECTIONS array.
+// With 8 directions the old indices [0,4,2,6] happened to map to N/S/E/W.
+// After the upgrade to 16 directions those same indices map to N/E/NE/SE,
+// which is why the compass showed SE and NE where S and W should appear.
+// Correct indices: N=0, S=8, E=4, W=12.
 const CARDINAL_POSITIONS = [
-  { label: COMPASS_DIRECTIONS[0], x: 50, y: 8  }, // N
-  { label: COMPASS_DIRECTIONS[4], x: 50, y: 96 }, // S
-  { label: COMPASS_DIRECTIONS[2], x: 96, y: 53 }, // E
-  { label: COMPASS_DIRECTIONS[6], x: 4,  y: 53 }, // W
+  { label: COMPASS_DIRECTIONS[0],  x: 50, y: 8  }, // N
+  { label: COMPASS_DIRECTIONS[8],  x: 50, y: 96 }, // S
+  { label: COMPASS_DIRECTIONS[4],  x: 96, y: 53 }, // E
+  { label: COMPASS_DIRECTIONS[12], x: 4,  y: 53 }, // W
 ];
 
 // Array.from is semantically cleaner than [...Array(8)].
@@ -26,11 +31,19 @@ const TICK_MARKS = Array.from({ length: 8 }, (_, i) => {
 function WindCompass({ degrees, direction, speed }) {
   const angle = typeof degrees === "number"
     ? ((degrees % 360) + 360) % 360
-    : 0;
+    : null;
 
-  const dirLabel   = direction ?? `${angle}°`;
+  const dirLabel   = direction ?? (angle != null ? `${angle}°` : "N/A");
   // formatValue returns "—" for null/undefined, so no extra guard needed here.
   const speedLabel = speed != null ? ` at ${formatValue(speed, "wind")}` : "";
+
+  if (degrees == null) {
+  return (
+    <div className="rounded-2xl p-5 flex items-center justify-center text-text-muted bg-surface border border-surface-border min-h-[160px]">
+      Wind data not available
+    </div>
+  );
+}
 
   return (
     <div className="rounded-2xl p-5 flex flex-col items-center justify-center bg-surface border border-surface-border backdrop-blur-md min-h-[160px]">
@@ -40,7 +53,7 @@ function WindCompass({ degrees, direction, speed }) {
       <svg
         width="100"
         height="100"
-        viewBox="0 0 100 100"
+        viewBox="0 0 100 104"
         role="img"
         aria-label={`Wind direction: ${dirLabel}${speedLabel}`}
       >
@@ -89,7 +102,9 @@ function WindCompass({ degrees, direction, speed }) {
           />
         ))}
 
-        <g transform={`rotate(${angle}, 50, 50)`}>
+        <g transform={`rotate(${angle ?? 0}, 50, 50)`}
+           style={{ transition: "transform 0.5s ease-out" }}
+        >
           <polygon points="50,14 53,50 50,46 47,50" fill="#38bdf8" opacity="0.9" />
           {/* FIX: fill-text-faint is not a real Tailwind utility — inline style. */}
           <polygon points="50,86 53,50 50,54 47,50" fill="var(--text-faint)" opacity="0.6" />

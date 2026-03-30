@@ -15,8 +15,19 @@ const UV_LEVELS = [
 
 const UV_SCALE_MAX = 11;
 
-// Scale markers align with UV_LEVELS thresholds for visual consistency.
-const UV_SCALE_MARKERS = ["0", "2", "5", "7", "10+"];
+// FIX: Scale markers now carry their numeric value so they can be positioned
+// proportionally on the bar (left = value/UV_SCALE_MAX × 100%).
+// The previous `justify-between` approach spread them at equal intervals
+// (0 / 25 / 50 / 75 / 100 %) even though the actual thresholds fall at
+// 0 / 18 / 45 / 64 / 91 % — causing visible misalignment between the fill
+// and the tick labels.
+const UV_SCALE_MARKERS = [
+  { label: "0",   value: 0  },
+  { label: "2",   value: 2  },
+  { label: "5",   value: 5  },
+  { label: "7",   value: 7  },
+  { label: "10+", value: 10 },
+];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -63,10 +74,20 @@ function UVBar({ value }) {
         />
       </div>
 
-      {/* Scale markers — aligned with UV_LEVELS thresholds */}
-      <div className="flex justify-between mt-1">
-        {UV_SCALE_MARKERS.map((v) => (
-          <span key={v} className="text-[9px] font-mono text-text-faint">{v}</span>
+      {/* Scale markers — absolutely positioned at their proportional threshold
+          value so each label aligns with the correct point on the bar fill.  */}
+      <div className="relative mt-1 h-3">
+        {UV_SCALE_MARKERS.map(({ label, value }) => (
+          <span
+            key={label}
+            className="absolute text-[9px] font-mono text-text-faint"
+            style={{
+              left:      `${(value / UV_SCALE_MAX) * 100}%`,
+              transform: "translateX(-50%)",
+            }}
+          >
+            {label}
+          </span>
         ))}
       </div>
     </div>

@@ -24,7 +24,7 @@ const LEVELS = [
 
 const r  = 68;
 const cx = 80;
-const cy = 88;
+const cy = 85;
 
 const AQI_MAX = 500;
 const ARC_LEN = Math.PI * r;
@@ -63,9 +63,11 @@ function AQIGauge({ aqi }) {
     const calculatedLvl =
       LEVELS.find((l) => aqi <= l.max) ?? LEVELS[LEVELS.length - 1];
 
-    const calculatedAngle = Math.min(
-      90,
-      Math.max(-90, (aqi / AQI_MAX) * 180 - 90)
+   const normalizedAQI = Math.min(Math.max(aqi, 0), 300); // clamp to 0–300
+
+  const calculatedAngle = Math.min(
+    90,
+   Math.max(-90, (normalizedAQI / 300) * 180 - 90)
     );
 
     return { angle: calculatedAngle, lvl: calculatedLvl };
@@ -75,7 +77,9 @@ function AQIGauge({ aqi }) {
     return <div className="text-sm text-text-muted">AQI not available</div>;
   }
 
-  const needleRotation = angle + 90;
+  // needleRotation removed — `angle` is used directly.
+  // angle already spans –90° (AQI 0, left) → 0° (AQI 150, top) → +90° (AQI 300, right),
+  // which is exactly what a clockwise CSS rotation on an upward-pointing needle needs.
 
   return (
     <div className="flex flex-col items-center">
@@ -88,8 +92,8 @@ function AQIGauge({ aqi }) {
       */}
       <svg
         width="160"
-        height="95"
-        viewBox="0 0 160 95"
+        height="100"
+        viewBox="0 0 160 100"
         role="meter"
         aria-valuenow={aqi}
         aria-valuemin={0}
@@ -118,23 +122,25 @@ function AQIGauge({ aqi }) {
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={`${ARC_LEN} ${ARC_LEN}`}
-          strokeDashoffset={ARC_LEN - (aqi / AQI_MAX) * ARC_LEN}
+          strokeDashoffset={ARC_LEN - (Math.min(Math.max(aqi, 0), 300) / 300) * ARC_LEN}
           opacity="0.9"
         />
 
-        {/* Needle — transform-box + transform-origin on the element itself for
-            reliable cross-browser pivot at the line's own geometry origin.    */}
+        {/* Needle — drawn pointing straight up from the pivot.
+            Rotating by `angle` degrees (–90 → 0 → +90) maps exactly onto the
+            semicircular arc: left edge at –90°, top (noon) at 0°, right at +90°.
+            transformOrigin uses absolute SVG px coords so the pivot is always
+            the centre dot, independent of the line's own bounding box.        */}
         <g>
           <line
-            x1={cx}      y1={cy}
-            x2={cx - 52} y2={cy}
+            x1={cx} y1={cy}
+            x2={cx} y2={cy - 52}
             stroke={lvl.color}
             strokeWidth="2.5"
             strokeLinecap="round"
             style={{
-              transform:       `rotate(${needleRotation}deg)`,
-              transformBox:    "fill-box",
-              transformOrigin: "center bottom",
+              transform:       `rotate(${angle}deg)`,
+              transformOrigin: `${cx}px ${cy}px`,
               transition:      "transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1)",
             }}
           />
