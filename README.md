@@ -11,7 +11,7 @@
 
 **A production-grade, real-time weather intelligence dashboard built with React 19, powered by the Open-Meteo API. Detects your location automatically, visualizes weather and air quality across 7 interactive charts, and supports up to 2 years of historical trend analysis.**
 
-[🌍 Live Demo](#) · [🐛 Report Bug](#) · [💡 Request Feature](#)
+[🌍 Live Demo](https://weather-app-eta-six-69.vercel.app/) · [🐛 Report Bug](#) · [💡 Request Feature](#)
 
 </div>
 
