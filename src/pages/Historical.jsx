@@ -5,6 +5,7 @@ import DateRangePicker       from "../component/layout/DateRangePicker";
 import HistoricalChart       from "../component/charts/HistoricalCharts";
 import SectionLabel          from "../component/ui/SectionLabel";
 import { getTzAbbr }         from "../utils/timezone";
+import { ARCHIVE_LAG_DAYS }  from "../utils/constants";
 
 // Page 2 assignment requirement: "Sunrise & Sunset (Display time as per IST)".
 // IST_TZ is hardcoded here so the sun-cycle chart always shows times in
@@ -29,7 +30,6 @@ export default function Historical() {
     setIsStale,
     today,
     doFetch,
-    ARCHIVE_LAG_DAYS,
   } = useHistoricalData();
 
   const optimizedChartData = useChartData(weatherData, airData);

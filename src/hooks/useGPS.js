@@ -16,7 +16,7 @@ const safeStorage =
   typeof localStorage !== "undefined" ? localStorage : null;
 
 const logDev = (...args) => {
-  if (import.meta.env?.DEV) console.warn(...args);
+  if (import.meta.env?.DEV) console.log(...args);
 };
 
 // ─── Internal cache utilities ─────────────────────────────────────────────────
@@ -82,14 +82,13 @@ const readPersistedGeoState = () => {
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useGPS() {
-  // FIX: readPersistedGeoState was previously called directly in the function
-  // body, making it run on EVERY render (GPS badge updates, tz changes, etc.).
-  // Using useState lazy initialisers means it runs exactly once — on mount.
-  // Three separate lazy calls are intentional: each state slot initialises
-  // independently, and three synchronous localStorage reads on mount is trivial.
-  const [coords,         setCoords]         = useState(() => readPersistedGeoState().coords);
-  const [coordsCacheAge, setCoordsCacheAge] = useState(() => readPersistedGeoState().coordsCacheAge);
-  const [locationName,   setLocationName]   = useState(() => readPersistedGeoState().locationName);
+  // FIX: readPersistedGeoState was previously called three times (once per
+  // useState lazy initialiser), causing 6 localStorage reads on mount.
+  // Calling it once and destructuring the result reduces this to 2 reads.
+  const _init = readPersistedGeoState();
+  const [coords,         setCoords]         = useState(_init.coords);
+  const [coordsCacheAge, setCoordsCacheAge] = useState(_init.coordsCacheAge);
+  const [locationName,   setLocationName]   = useState(_init.locationName);
 
   const [timezone,    setTimezone]    = useState(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone,

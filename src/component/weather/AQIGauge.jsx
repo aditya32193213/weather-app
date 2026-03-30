@@ -63,11 +63,11 @@ function AQIGauge({ aqi }) {
     const calculatedLvl =
       LEVELS.find((l) => aqi <= l.max) ?? LEVELS[LEVELS.length - 1];
 
-   const normalizedAQI = Math.min(Math.max(aqi, 0), 300); // clamp to 0–300
+    const normalizedAQI = Math.min(Math.max(aqi, 0), AQI_MAX); // clamp to 0–500
 
-  const calculatedAngle = Math.min(
-    90,
-   Math.max(-90, (normalizedAQI / 300) * 180 - 90)
+    const calculatedAngle = Math.min(
+      90,
+      Math.max(-90, (normalizedAQI / AQI_MAX) * 180 - 90)
     );
 
     return { angle: calculatedAngle, lvl: calculatedLvl };
@@ -122,7 +122,7 @@ function AQIGauge({ aqi }) {
           strokeWidth="6"
           strokeLinecap="round"
           strokeDasharray={`${ARC_LEN} ${ARC_LEN}`}
-          strokeDashoffset={ARC_LEN - (Math.min(Math.max(aqi, 0), 300) / 300) * ARC_LEN}
+          strokeDashoffset={ARC_LEN - (Math.min(Math.max(aqi, 0), AQI_MAX) / AQI_MAX) * ARC_LEN}
           opacity="0.9"
         />
 

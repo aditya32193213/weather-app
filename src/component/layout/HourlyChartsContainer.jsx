@@ -36,7 +36,7 @@ const HourlyChartsContainer = React.memo(function HourlyChartsContainer({
   const visibilityKmData = useMemo(
     () =>
       hourly?.visibility?.map((v) =>
-        v != null ? (Number.isFinite(v) ? Number((v / 1000).toFixed(1)) : 0) : null
+        Number.isFinite(v) ? Number((v / 1000).toFixed(1)) : null
       ),
     [hourly]
   );

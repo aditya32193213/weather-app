@@ -38,12 +38,12 @@ function WindCompass({ degrees, direction, speed }) {
   const speedLabel = speed != null ? ` at ${formatValue(speed, "wind")}` : "";
 
   if (degrees == null) {
-  return (
-    <div className="rounded-2xl p-5 flex items-center justify-center text-text-muted bg-surface border border-surface-border min-h-[160px]">
-      Wind data not available
-    </div>
-  );
-}
+    return (
+      <div className="rounded-2xl p-5 flex items-center justify-center text-text-muted bg-surface border border-surface-border min-h-[160px]">
+        Wind data not available
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-2xl p-5 flex flex-col items-center justify-center bg-surface border border-surface-border backdrop-blur-md min-h-[160px]">

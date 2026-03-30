@@ -4,9 +4,9 @@ const MAX_RETRIES = 2;
 const BASE_DELAY  = 300;   // ms — doubles each attempt
 const MAX_DELAY   = 5000;  // ms — cap for exponential back-off
 
-/** Emit warnings in development without leaking logs to production builds. */
+/** Emit diagnostics in development without leaking logs to production builds. */
 const logDev = (...args) => {
-  if (import.meta.env?.DEV) console.warn("[apiFetch]", ...args);
+  if (import.meta.env?.DEV) console.log("[apiFetch]", ...args);
 };
 
 const isRetryable = (status) => status === 429 || status >= 500;

@@ -5,7 +5,7 @@ import { fetchDayAirQuality } from "../services/airQualityService";
 
 
 const logDev = (...args) => {
-  if (import.meta.env?.DEV) console.warn("[useWeatherData]", ...args);
+  if (import.meta.env?.DEV) console.log("[useWeatherData]", ...args);
 };
 
 /**

@@ -33,7 +33,7 @@ const MANAGED_PREFIXES = [
 // ─── Logging ─────────────────────────────────────────────────────────────────
 
 const logDev = (...args) => {
-  if (import.meta.env?.DEV) console.warn("[cache]", ...args);
+  if (import.meta.env?.DEV) console.log("[cache]", ...args);
 };
 
 // ─── Safe localStorage wrappers ───────────────────────────────────────────────

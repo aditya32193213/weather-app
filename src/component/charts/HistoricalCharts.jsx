@@ -172,11 +172,18 @@ export default function HistoricalChart({
     [labels, datasets, secondaryDatasets]
   );
 
+  // FIX: Using [labels] directly causes unnecessary brush resets on every parent
+  // re-render that creates a new array reference for the same data. A stable
+  // string key — identical to how HourlyChart avoids the same problem — prevents
+  // the user's zoom selection from being discarded on unrelated re-renders.
+  const midIdx    = Math.floor(labels.length / 2);
+  const labelsKey = `${labels.length}:${labels[0] ?? ""}:${labels[midIdx] ?? ""}:${labels.at(-1) ?? ""}`;
+
   useEffect(() => {
     if (chartData.length > 0) {
       setBrushIndices({ startIndex: 0, endIndex: chartData.length - 1 });
     }
-  }, [labels]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [labelsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Zoom derived state ────────────────────────────────────────────────────
 

@@ -8,10 +8,10 @@ import {
   CACHE_EXPIRY_TODAY,
   CACHE_EXPIRY_HISTORY,
   CACHE_VERSION,
+  ERROR_TYPES,
 } from "../utils/constants";
 import { normalizeTimezone, resolveTimezone, getTzDateStr } from "../utils/timezone";
 import { isValidCoord, isValidDateRange }                  from "../utils/validation";
-import { ERROR_TYPES }                                     from "../utils/constants";
 
 // ─── Internal helpers ─────────────────────────────────────────────────────────
 
@@ -278,7 +278,6 @@ export async function fetchHistoricalAirQuality(
           hourly:     "pm10,pm2_5",
         };
 
-        // FIX: forceRefresh forwarded to apiFetch — Cache-Control: no-cache on retry.
         const data = await apiFetch(buildUrl(AIR_URL, params), signal, forceRefresh);
         return { data, error: null };
       } catch (err) {

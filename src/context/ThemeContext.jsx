@@ -34,7 +34,7 @@ const safeLocalStorage = {
  * @param {{ children: React.ReactNode }} props
  */
 export function ThemeProvider({ children }) {
-  const [isDark, setIsDark] = useState(() => {
+  const [isDark, setIsDarkState] = useState(() => {
     const stored = safeLocalStorage.getItem("theme");
     if (stored === "dark")  return true;
     if (stored === "light") return false;
@@ -50,9 +50,9 @@ export function ThemeProvider({ children }) {
   const userInitiatedRef = useRef(false);
 
   // Exposed setter — marks the change as user-initiated before updating state.
-  const handleSetIsDark = useCallback((val) => {
+  const setIsDark = useCallback((val) => {
     userInitiatedRef.current = true;
-    setIsDark(val);
+    setIsDarkState(val);
   }, []);
 
   // Apply the theme class; persist only when user explicitly toggled.
@@ -68,7 +68,7 @@ export function ThemeProvider({ children }) {
   // Follow OS preference changes — but only when the user has NOT set an
   // explicit preference. Once they toggle the button, localStorage takes over
   // and this listener becomes a no-op until the preference is cleared.
-  // Note: calls setIsDark directly (not handleSetIsDark) so the OS event
+  // Note: calls setIsDarkState directly (not setIsDark) so the OS event
   // does NOT set userInitiatedRef and therefore does NOT write to localStorage.
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -78,7 +78,7 @@ export function ThemeProvider({ children }) {
       // Re-read from storage inside the handler so it always reflects the
       // latest user choice rather than a stale closure over the initial value.
       if (!safeLocalStorage.getItem("theme")) {
-        setIsDark(e.matches);
+        setIsDarkState(e.matches);
       }
     };
 
@@ -88,8 +88,8 @@ export function ThemeProvider({ children }) {
 
   // Memoize the context value so consumers only re-render when isDark changes.
   const contextValue = useMemo(
-    () => ({ isDark, setIsDark: handleSetIsDark }),
-    [isDark, handleSetIsDark],
+    () => ({ isDark, setIsDark }),
+    [isDark, setIsDark],
   );
 
   return (
